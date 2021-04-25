@@ -26,7 +26,7 @@ def moduladaFM(V_c,m,f_c,f_m,tiempo):
     w_c=2*math.pi*f_c
     w_m=2*math.pi*f_m
     for t in tiempo:
-        valores.append(V_c*math.cos[w_c*t + m*math.sin(w_m*t)])
+        valores.append(V_c*math.cos(w_c*t + m*math.sin(w_m*t)))
     return valores
 
 #Onda Modulada PM
@@ -35,7 +35,7 @@ def moduladaPM(V_c,m,f_c,f_m,tiempo):
     w_c=2*math.pi*f_c
     w_m=2*math.pi*f_m
     for t in tiempo:
-        valores.append(V_c*math.cos[w_c*t + m*math.cos(w_m*t)])
+        valores.append(V_c*math.cos(w_c*t + m*math.cos(w_m*t)))
     return valores
 
 #Función de Bessel
@@ -49,11 +49,9 @@ def funcionDeBessel(m):
         for s in range(80):
             J[n]+=(((-1)**s)*((m/2)**(2*s)))/((math.factorial(s))*math.factorial(n+s))
         J[n]=J[n]*((m/2)**n)
-        if(abs(J[n])<0.01):
+        if(abs(J[n])<0.01 and n!=0):
             J.pop()
             continuar=False
         else:
             n+=1
     return J
-
-
