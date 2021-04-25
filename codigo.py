@@ -44,7 +44,7 @@ ax.set_ylabel('Señal moduladora')  # Add a y-label to the axes.
 ax.set_title("Señal moduladora")  # Add a title to the axes.
 ax.legend()  # Add a legend.
 plt.show()
-
+ 
 """
 Generación gráfica Señal Portadora
 """
