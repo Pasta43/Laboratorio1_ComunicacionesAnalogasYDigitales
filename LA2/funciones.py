@@ -60,3 +60,30 @@ def QPSK(f_c,tren,samples,t_b):
             valores.append(tren[i]*math.sin(w*t)+tren[i+1]*math.cos(w*t))
     return valores  
 
+
+#Función de Bessel
+def funcionDeBessel(h):
+    J=list()
+    n=0
+    continuar=True
+    while(continuar):
+        J.append(0.0)
+        s=0
+        for s in range(80):
+            J[n]+=(((-1)**s)*((h/2)**(2*s)))/((math.factorial(s))*math.factorial(n+s))
+        J[n]=J[n]*((h/2)**n)
+        if(abs(J[n])<0.01 and n!=0):
+            J.pop()
+            continuar=False
+        else:
+            n+=1
+    return J
+
+    
+
+
+
+
+
+
+

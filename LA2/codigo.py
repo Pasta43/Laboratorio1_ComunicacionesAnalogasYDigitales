@@ -1,3 +1,5 @@
+from math import log
+from codigo import Delta_f
 import matplotlib.pyplot as plt
 import numpy as np
 import funciones
@@ -24,14 +26,15 @@ Amplitud y frecuencia señal Portadora
 """
 V_c = float(input("Ingrese la amplitud de la señal portadora: "))
 f_c = float(input("Ingrese la frecuencia de la señal portadora: "))
-deltaF = float(input("Ingrese la desviación máxima de frecuencia: "))
-
+k1 = float(input("Ingrese la sensibilidad de la desviación: "))
+f_b = float(input("Ingrese la rapidez de bits: "))
 """
 Velocidad de bits
 """
-f_b=10e3
+deltaF=k1
 t_b=1/(f_b) #Tiempo de bit
 f_a=f_b/2 #Frecuencia fundamental maxima de entrada binaria 
+h = deltaF/f_a #Factor h 
 tiempo= np.linspace(0,2*t_b,samples)
 
 # 2. Visualizar las señales Portadora, Moduladora y Modulada.
@@ -115,6 +118,105 @@ ax.set_title("QPSK")  # Add a title to the axes.
 ax.legend()  # Add a legend.
 plt.show()
 
+
+"""
+BESSEL
+"""
+fig, ax = plt.subplots()
+
+J=funciones.funcionDeBessel(h)
+amplitudesEspectro= list()
+dominioFrecuencia=list()
+for n in range(len(J)):
+    if(n!=0):
+        amplitudesEspectro.append(J[n]*V_c)
+        dominioFrecuencia.append(f_c+n*f_b)  
+    amplitudesEspectro.append(J[n]*V_c)
+    dominioFrecuencia.append(f_c-n*f_b)
+
+# Gráficas
+ax.stem(dominioFrecuencia, amplitudesEspectro,label="Espectro de amplitud")
+plt.xlabel('Frecuencia [Hz]')
+plt.ylabel('Volts [V]')
+plt.show()
+
+#Diagrama de constelación BPSK
+fig, ax = plt.subplots()
+vectores = np.array([[-1,0], [1,0]])
+origin = [0,0] # origin point
+colores=['r','y']
+labels=['0','1']
+for vector, label,color in zip(vectores, labels,colores):
+    plt.quiver(origin[0],origin[1],vector[0],vector[1],scale=7,label=label,color=color)
+ax.axes.xaxis.set_ticklabels([])
+ax.axes.yaxis.set_ticklabels([])
+ax.set_xlabel(r'$\sin(\omega_ct)$')  # Add an x-label to the axes.
+ax.set_ylabel(r'$\cos(\omega_ct)$')  # Add a y-label to the axes.
+ax.set_title("Diagrama de constelación BPSK")  # Add a title to the axes.
+ax.legend()
+plt.show()
+
+
+#Diagrama de constelación QPSK
+fig, ax = plt.subplots()
+vectores = np.array([[1,1], [-1,1], [-1,-1],[1,-1]])
+origin = [0,0] # origin point
+colores=['r','g','b','y']
+labels=['11','01','00','10']
+for vector, label,color in zip(vectores, labels,colores):
+    plt.quiver(origin[0],origin[1],vector[0],vector[1],scale=7,label=label,color=color)
+ax.axes.xaxis.set_ticklabels([])
+ax.axes.yaxis.set_ticklabels([])
+ax.set_xlabel(r'$\sin(\omega_ct)$')  # Add an x-label to the axes.
+ax.set_ylabel(r'$\cos(\omega_ct)$')  # Add a y-label to the axes.
+ax.set_title("Diagrama de constelación QPSK")  # Add a title to the axes.
+ax.legend()
+plt.show()
+
+"""
+Visualización de datos
+"""
+
+#Desviación máxima de frecuencia 
+print("La desviación máxima de frecuencia es: ±",deltaF )
+
+#Sensibilidad de la desviación
+print("La sensibilidad de la desviación es: ",k1)
+
+#Indice de modulación
+print("El indice de modualción es: ",h)
+
+#Frecuencias de marca y espacio
+f_s = (f_c - deltaF)
+print("La frecuencia de espacio es: ",f_s, "Hz")
+
+f_m = (f_c + deltaF)
+print("La frecuencia de marca es: ",f_m,"Hz")
+
+#Frecuencia de bits
+print("La frecuencia de bits es: ",f_b)
+
+#Tiempo de bits
+print("El tiempo de bits es: ", t_b)
+
+#Ancho de banda minimo BPSK 
+print("El ancho de banda minimo es: ", f_b)
+
+#Ancho de banda minimo QPSK 
+B = f_b/2
+print("El ancho de banda minimo para QPSK es: ", B)
+
+#Ancho de banda minimo FSK 
+B = 2*(deltaF + f_b)
+print("El ancho de banda minimo para FSK es: ", B)
+
+#Condiciones M-aria
+M=2
+N=int(log(M,2))
+print("Codificación M-aria para BPSK M=",M,"N=",N)
+M=4
+N=int(log(M,2))
+print("Codificación M-aria P QPSK  M=",M,"N=",N)
 
 
 
